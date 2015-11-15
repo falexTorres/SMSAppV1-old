@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class ContactListActivity extends AppCompatActivity {
 
@@ -37,12 +38,11 @@ public class ContactListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ContactListActivity.this, SMS.class);
-                intent.putExtra("ContactName", arrayAdapterNames.getItem(position));
+                String nameAndID = arrayAdapterNames.getItem(position);
+                intent.putExtra("ContactName", getNumber(nameAndID));
                 startActivity(intent);
             }
         });
-
-        //refreshDrafts();
 
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -53,10 +53,8 @@ public class ContactListActivity extends AppCompatActivity {
                 ident.add(id);
                 String name = cur.getString(
                         cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                name = name + " : " + id;
                 names.add(name);
-                //if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                //System.out.println("Blue\n");
-                //}
             }
         }
     }
@@ -96,4 +94,22 @@ public class ContactListActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public String getNumber(String nameAndID){
+        ContentResolver cr = getContentResolver();
+        StringTokenizer token = new StringTokenizer(nameAndID);
+        token.nextToken(":");
+        String query = "_ID=" + token.nextToken(":");
+        Cursor curse = cr.query(Uri.parse("content://sms/"), null, query, null,null);
+        try {
+            if (curse.moveToFirst()) {
+                return curse.getString(curse.getColumnIndexOrThrow("address"));
+            }
+        }catch(Exception e){
+
+        }
+        return "Error";
+
+    }
+
 }
