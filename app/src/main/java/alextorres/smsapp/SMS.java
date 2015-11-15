@@ -1,6 +1,8 @@
 package alextorres.smsapp;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,8 +18,22 @@ import android.widget.Toast;
 public class SMS extends Activity {
 
     private Button btnSendSMS;
-    private EditText txtPhoneNo;
-    private EditText txtMessage;
+    public static EditText txtPhoneNo;
+    public EditText txtMessage;
+    public View auto_reply_off = null;
+
+
+    public SMS(String number) {
+        if((number.length()==10) || (number.length()==11)) {
+            txtPhoneNo.setText(number);
+        }
+
+        else txtMessage.setText(number);
+    }
+
+    public SMS(){
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +72,7 @@ public class SMS extends Activity {
             @Override
             public void onClick(View view) {
                 sendSMS();
-                }
+            }
         });
 
     }
@@ -64,22 +80,43 @@ public class SMS extends Activity {
 
     public void sendSMS()
     {
-        try
-        {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(txtPhoneNo.getText().toString(), null, txtMessage.getText().toString(), null, null);
-            Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
-        }
+        String number = txtPhoneNo.getText().toString();
+        String multiNumbers[] = number.split(", *");
 
-        catch (Exception ex)
-        {
-            Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
-            ex.printStackTrace();
+        for(String n : multiNumbers) {
+            try {
+
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
+                Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
+            } catch (Exception ex) {
+                Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
+                ex.printStackTrace();
+            }
         }
 
 
     }
 
+    public void sendSMS(String number)
+    {
+        number = txtPhoneNo.getText().toString();
+        String multiNumbers[] = number.split(", *");
+
+        for(String n : multiNumbers) {
+            try {
+
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
+                Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
+            } catch (Exception ex) {
+                Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
+                ex.printStackTrace();
+            }
+        }
+
+
+    }
 
 
 
@@ -132,4 +169,33 @@ public class SMS extends Activity {
         Intent intent = new Intent(this, ContactListActivity.class);
         startActivity(intent);
     }
+
+    public void showHelpBox(View view)
+    {
+        DialogFragment help = new HelpBox();
+        help.show(getFragmentManager(), "What are those?");
+    }
+
+    public void autoReplyOn(View view)
+    {
+        SmsRecieve sr = new SmsRecieve();
+
+        if (view == auto_reply_off)
+        {
+            sr.auto_reply_status = false;
+            Toast.makeText(getApplicationContext(), "auto reply turned off", Toast.LENGTH_LONG).show();
+        }
+
+        else
+        {
+            sr.auto_reply_status = true;
+            Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void autoReplyOff(View view)
+    {
+        autoReplyOn(auto_reply_off);
+    }
+
 }
