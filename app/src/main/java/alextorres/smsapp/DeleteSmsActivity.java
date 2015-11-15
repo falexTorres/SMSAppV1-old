@@ -1,16 +1,13 @@
 package alextorres.smsapp;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.content.Context;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +30,7 @@ public class DeleteSmsActivity extends AppCompatActivity {
         Bundle messageID = getIntent().getExtras();
         if (messageID != null) {
             message = messageID.getString("MESSAGE_ID");
-            mID = message;
+            mID = message.trim();
             messageID.clear();
         }
         message = getMessage(getApplicationContext(),message);
@@ -57,8 +54,18 @@ public class DeleteSmsActivity extends AppCompatActivity {
         return "No Message to show, error has occurred.";
     }
 
-    public void deleteMessage(){
+    public void deleteMessage(View view){
+        int numberDeleted = 0;
+        String query = "_id="+mID;
+        try {
+            numberDeleted = getApplicationContext().getContentResolver().delete(Uri.parse("content://sms/"),query,null);
+            System.out.println("NUMBER DELETED: "+ numberDeleted);
+        }catch(Exception e){
+            System.out.println("ERROR in deleting a sms message");
+        }
 
+        Intent intent = new Intent(DeleteSmsActivity.this, SmsRecieve.class);
+        startActivity(intent);
     }
 
 
