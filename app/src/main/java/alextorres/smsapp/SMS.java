@@ -1,12 +1,16 @@
 package alextorres.smsapp;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +24,40 @@ public class SMS extends Activity {
     private Button btnSendSMS;
     public static EditText txtPhoneNo;
     public EditText txtMessage;
-    public View auto_reply_off = null;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SMS.this);
+        builder.setMessage("This SMS app is not set as your default messaging app. Do you want to set it default?")
+                .setCancelable(false)
+                .setTitle("Dude!")
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+                })
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @TargetApi(19)
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Intent intent =
+                                new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+
+                        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
+                                getPackageName());
+
+                        startActivity(intent);
+
+                    }
+                });
+        builder.show();
+
+    }
 
     public SMS(String number) {
         if((number.length()==10) || (number.length()==11)) {
