@@ -155,7 +155,7 @@ public class SMS extends Activity {
         values.put("type", "3");
         // Put the actual thread id here. 0 if there is no thread yet.
         values.put("thread_id", "0");
-        getContentResolver().insert(Uri.parse("content://sms/draft"), values);
+        getContentResolver().insert(Uri.parse("content://sms/inbox"), values);
         Intent intent = new Intent(this, SmsRecieve.class);
         startActivity(intent);
     }
