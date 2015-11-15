@@ -14,11 +14,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    String[] thread_id, snippet,conversationCount, phoneNumbers;
+    ArrayList<String> name;
+    private static SmsRecieve inst;
+    ArrayList<String> smsMessagesList = new ArrayList<String>();
+    ListView smsListView;
+    ArrayAdapter arrayAdapter;
+    SearchView search;
+    static Uri uri ;
+    public boolean auto_reply_status;
 
     public class SmsBroadcastReceiver extends BroadcastReceiver {
 
@@ -38,6 +49,11 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
                     smsMessageStr += "SMS From: " + address + "\n";
                     smsMessageStr += smsBody + "\n";
+
+                    if (auto_reply_status==true){
+                        SMS autoreply = new SMS();
+                        autoreply.sendSMS(address);
+                    }
                 }
                 Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show();
 
@@ -45,16 +61,9 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
                 SmsRecieve inst = SmsRecieve.instance();
                 inst.updateList(smsMessageStr);
             }
+
         }
     }
-
-    String[] thread_id, snippet,conversationCount, phoneNumbers;
-    ArrayList<String> name;
-    private static SmsRecieve inst;
-    ArrayList<String> smsMessagesList = new ArrayList<String>();
-    ListView smsListView;
-    ArrayAdapter arrayAdapter;
-
 
     public static SmsRecieve instance() {
         return inst;
@@ -71,12 +80,57 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_recieve);
         smsListView = (ListView) findViewById(R.id.SMSList);
+        search = (SearchView) findViewById(R.id.searchView);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, smsMessagesList);
         smsListView.setAdapter(arrayAdapter);
         smsListView.setOnItemClickListener(this);
 
+
+
         refreshSmsInbox();
         refreshDraftsBox();
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Cursor c;
+
+                uri = Uri.parse("content://sms/inbox");
+                c = getContentResolver().query(uri, null, null ,null, "date DESC");
+                startManagingCursor(c);
+
+                String[] body = new String[c.getCount()];
+
+                if(c.moveToFirst()){
+                    for(int i=0;i<c.getCount();i++){
+                        body[i]= c.getString(c.getColumnIndexOrThrow("body"));
+
+                        smsMessagesList = check(body[i]);
+
+                        c.moveToNext();
+                    }
+                }
+                c.close();
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
+
+    private ArrayList<String> check(String str) {
+
+        boolean fullContainsSub = str.toUpperCase().indexOf(str.toUpperCase()) != -1;
+
+        if(fullContainsSub)
+        {
+            smsMessagesList.add(str);
+        }
+        return smsMessagesList;
     }
 
     private void refreshDraftsBox() {
@@ -120,7 +174,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
             }
             smsInboxCursor.moveToNext();
         }
-        
+
         smsInboxCursor.close();
 
     }

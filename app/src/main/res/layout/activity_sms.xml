@@ -3,13 +3,41 @@
     android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".SMS" android:orientation="vertical">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".SMS" android:orientation="vertical"
+    android:onClick="showHelpBox">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" />
 
     <EditText android:id="@+id/txtPhoneNo" android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="Enter phone #"/>
-    <EditText android:id="@+id/txtMessage" android:layout_width="fill_parent" android:layout_height="150px" android:layout_gravity="top"
-       android:hint="Enter Message"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="168dp"
+            android:layout_height="wrap_content"
+            android:text="Save Contact"
+            android:id="@+id/saveContact"
+            android:nestedScrollingEnabled="false"
+            android:onClick="saveContact" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Phone Number"
+            android:id="@+id/insertContact"
+            android:onClick="toContacts" />
+    </LinearLayout>
+
+    <EditText android:id="@+id/txtMessage" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_gravity="top"
+        android:hint="Enter Message"/>
 
     <Button
         android:id="@+id/btnSendSMS"
@@ -37,6 +65,30 @@
         android:text="Save As Draft"
         android:id="@+id/btnSaveDraft"
         android:onClick="toDrafts"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="set auto-reply"
+        android:id="@+id/autoreplyOn"
+        android:layout_gravity="center_horizontal"
+        android:onClick="autoReplyOn" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Unset auto-reply"
+        android:id="@+id/autoreplyOff"
+        android:layout_gravity="center_horizontal"
+        android:onClick="autoReplyOff" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Help"
+        android:id="@+id/helpButton"
+        android:layout_gravity="center_horizontal"
+        android:onClick="showHelpBox"/>
 
 
 </LinearLayout>
