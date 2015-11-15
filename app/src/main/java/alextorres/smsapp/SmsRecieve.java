@@ -28,7 +28,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
     ListView smsListView;
     ArrayAdapter arrayAdapter;
     SearchView search;
-    static Uri uri ;
+    static Uri uri;
     public boolean auto_reply_status;
 
     public class SmsBroadcastReceiver extends BroadcastReceiver {
@@ -37,13 +37,13 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
         public void onReceive(Context context, Intent intent) {
             Bundle intentExtras = intent.getExtras();
+            Object[] sms = (Object[]) intentExtras.get(SMS_BUNDLE);
+            String smsMessageStr = "";
+
             if (intentExtras != null) {
-                Object[] sms = (Object[]) intentExtras.get(SMS_BUNDLE);
-                String smsMessageStr = "";
                 for (int i = 0; i < sms.length; ++i)
                 {
                     SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
-
                     String smsBody = smsMessage.getMessageBody().toString();
                     String address = smsMessage.getOriginatingAddress();
 
@@ -52,8 +52,9 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
                     if (auto_reply_status==true){
                         SMS autoreply = new SMS();
-                        autoreply.sendSMS(address);
+                        autoreply.sendSMS(smsMessage.getMessageBody().toString());
                     }
+
                 }
                 Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show();
 
@@ -117,6 +118,24 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Cursor c;
+
+                uri = Uri.parse("content://sms/inbox");
+                c = getContentResolver().query(uri, null, null ,null, "date DESC");
+                startManagingCursor(c);
+
+                String[] body = new String[c.getCount()];
+
+                if(c.moveToFirst()){
+                    for(int i=0;i<c.getCount();i++){
+                        body[i]= c.getString(c.getColumnIndexOrThrow("body"));
+
+                        smsMessagesList = check(body[i]);
+
+                        c.moveToNext();
+                    }
+                }
+                c.close();
                 return false;
             }
         });
@@ -136,15 +155,29 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
     private void refreshDraftsBox() {
         ContentResolver contentResolver = getContentResolver();
         Cursor draftsCursor = contentResolver.query(Uri.parse("content://sms/draft"), null, null, null, null);
-        int indexBody = draftsCursor.getColumnIndex("body");
-        int indexAddress = draftsCursor.getColumnIndex("address");
-        if (indexBody < 0 || !draftsCursor.moveToFirst()) return;
-        arrayAdapter.clear();
-        do {
-            String str = "Draft Saved: " + draftsCursor.getString(indexAddress) +
-                    "\n" + draftsCursor.getString(indexBody) + "\n";
-            arrayAdapter.add(str);
-        } while (draftsCursor.moveToNext());
+        String tempName = null;
+        conversationCount = new String[draftsCursor.getCount()];
+        snippet = new String[draftsCursor.getCount()];
+        thread_id = new String[draftsCursor.getCount()];
+
+        draftsCursor.moveToFirst();
+        for(int i = 0; i < draftsCursor.getCount(); i++){
+            conversationCount[i] = draftsCursor.getString(draftsCursor.getColumnIndexOrThrow(("address"))).toString();
+
+            snippet[i] = draftsCursor.getString(draftsCursor.getColumnIndexOrThrow(("body"))).toString();
+
+            thread_id[i] = draftsCursor.getString(draftsCursor.getColumnIndexOrThrow(("thread_id"))).toString();
+
+            tempName = getName(getApplicationContext(),thread_id[i]);
+            if(tempName != null){
+                arrayAdapter.add(tempName + " : " + snippet[i]);
+            }else {
+                arrayAdapter.add(thread_id[i] + " : " + snippet[i]);
+            }
+            draftsCursor.moveToNext();
+        }
+
+        draftsCursor.close();
     }
 
     private void refreshSmsInbox() {
