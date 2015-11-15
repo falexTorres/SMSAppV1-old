@@ -29,7 +29,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
     ArrayAdapter arrayAdapter;
     SearchView search;
     static Uri uri1;
-    public boolean auto_reply_status;
+    public static boolean auto_reply_status = false;
 
     public class SmsBroadcastReceiver extends BroadcastReceiver {
 
@@ -89,26 +89,6 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Cursor c;
-
-                uri1 = Uri.parse("content://sms/inbox");
-                c = getContentResolver().query(uri1, null, null, null, "date DESC");
-                startManagingCursor(c);
-
-                String[] body = new String[c.getCount()];
-
-                if (c.moveToFirst()) {
-                    for (int i = 0; i < c.getCount(); i++) {
-                        body[i] = c.getString(c.getColumnIndexOrThrow("body"));
-
-                        smsMessagesList = check(body[i]);
-
-                        c.moveToNext();
-                    }
-                }
-                c.close();
-                refreshSmsInbox();
-                refreshDraftsBox();
                 return false;
             }
 
@@ -117,7 +97,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
                 Cursor c;
 
                 uri1 = Uri.parse("content://sms/inbox");
-                c = getContentResolver().query(uri1, null, null, null, "date DESC");
+                c = getContentResolver().query(uri1, null, null, null, null);
                 startManagingCursor(c);
 
                 String[] body = new String[c.getCount()];

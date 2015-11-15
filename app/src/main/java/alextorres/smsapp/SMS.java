@@ -178,19 +178,19 @@ public class SMS extends Activity {
 
     public void autoReplyOn(View view)
     {
-        SmsRecieve sr = new SmsRecieve();
-        SmsRecieve ar = sr;
-        ar.auto_reply_status = true;
+        SmsRecieve.auto_reply_status = true;
         Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, SmsRecieve.class);
+        startActivity(intent);
 
     }
 
     public void autoReplyOff(View view)
     {
-        SmsRecieve sr = new SmsRecieve();
-        SmsRecieve ar = sr;
-        ar.auto_reply_status = false;
+        SmsRecieve.auto_reply_status = false;
         Toast.makeText(getApplicationContext(), "auto reply turned off", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, SmsRecieve.class);
+        startActivity(intent);
     }
 
 }
