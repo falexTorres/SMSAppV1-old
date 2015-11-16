@@ -57,19 +57,21 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".HeadlessSmsSendService"
-            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
-            android:exported="true" >
+        <service
+            android:name=".HeadlessSmsSendService"
+            android:exported="true"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE" >
             <intent-filter>
                 <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="sms" />
                 <data android:scheme="smsto" />
                 <data android:scheme="mms" />
                 <data android:scheme="mmsto" />
             </intent-filter>
         </service>
-
 
         <activity
             android:name=".SmsRecieve"
@@ -92,6 +94,16 @@
         <activity
             android:name=".DeleteSmsActivity"
             android:label="@string/title_activity_delete_sms"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".DisplayDraftActivity"
+            android:label="@string/title_activity_display_draft"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".EditDraftActivity"
+            android:label="@string/title_activity_edit_draft"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

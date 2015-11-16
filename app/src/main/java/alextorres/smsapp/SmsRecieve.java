@@ -131,7 +131,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         });
 
         refreshSmsInbox();
-        refreshDraftsBox();
+        //refreshDraftsBox();
     }
 
     private ArrayList<String> check(String str) {

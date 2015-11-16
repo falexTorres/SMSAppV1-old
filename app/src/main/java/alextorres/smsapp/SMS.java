@@ -47,7 +47,6 @@ public class SMS extends Activity {
         try{
             Bundle extras = getIntent().getExtras();
             if (!(extras.isEmpty())) {
-                try {
                     if(extras.containsKey("ContactName")){
                         String number = extras.getString("ContactName");
                         txtPhoneNo.setText(number);
@@ -57,11 +56,6 @@ public class SMS extends Activity {
                         txtMessage.setText(message);
                         extras.clear();
                     }
-
-
-                } catch (Exception E) {
-                    System.out.println("Blah");
-                }
             }
         }catch(Exception e){
 
@@ -144,17 +138,26 @@ public class SMS extends Activity {
     public void toDrafts(View view){
         //Store the message in the draft folder so that it shows in Messaging apps.
         ContentValues values = new ContentValues();
-        // Message address.
-        values.put("address", txtPhoneNo.getText().toString());
-        // Message body.
-        values.put("body", txtMessage.getText().toString());
+        if(txtPhoneNo.getText().toString().trim().length() == 0){
+            values.put("address", " ");
+        }else {
+            // Message address.
+            values.put("address", txtPhoneNo.getText().toString());
+        }
+
+        if(txtMessage.getText().toString().trim().length() == 0){
+            values.put("body", "Draft");
+        }else{
+            // Message body.
+            values.put("body", txtMessage.getText().toString() + " DRAFT");
+        }
         // Date of the draft message.
         values.put("date", String.valueOf(System.currentTimeMillis()));
         values.put("type", "3");
         // Put the actual thread id here. 0 if there is no thread yet.
         values.put("thread_id", "0");
-        getContentResolver().insert(Uri.parse("content://sms/inbox"), values);
-        Intent intent = new Intent(this, SmsRecieve.class);
+        getContentResolver().insert(Uri.parse("content://sms/draft"), values);
+        Intent intent = new Intent(this, DisplayDraftActivity.class);
         startActivity(intent);
     }
 
