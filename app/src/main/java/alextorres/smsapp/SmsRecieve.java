@@ -1,15 +1,19 @@
 package alextorres.smsapp;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsMessage;
@@ -23,6 +27,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    Toolbar mToolbar;
 
     String[] thread_id, snippet,conversationCount, phoneNumbers, draftBody, draftAddress, thread;
     ArrayList<String> name;
@@ -88,10 +94,24 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         inst = this;
     }
 
+    @SuppressLint("WrongViewCast")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_recieve);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_messages);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Messages");
+
         smsListView = (ListView) findViewById(R.id.SMSList);
         search = (SearchView) findViewById(R.id.searchView);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, smsMessagesList);

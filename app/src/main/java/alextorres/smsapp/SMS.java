@@ -1,26 +1,32 @@
 package alextorres.smsapp;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class SMS extends Activity {
+public class SMS extends AppCompatActivity {
 
     private Button btnSendSMS;
     public static EditText txtPhoneNo;
     public EditText txtMessage;
     public View auto_reply_off = null;
-
+    Toolbar mToolbar;
 
     public SMS(String number) {
         if((number.length()==10) || (number.length()==11)) {
@@ -39,6 +45,19 @@ public class SMS extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN); //To stop keyboard from automatically popping up
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_sms);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Home");
+
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
         txtPhoneNo = (EditText) findViewById(R.id.txtPhoneNo);
         txtMessage = (EditText) findViewById(R.id.txtMessage);
@@ -47,15 +66,15 @@ public class SMS extends Activity {
         try{
             Bundle extras = getIntent().getExtras();
             if (!(extras.isEmpty())) {
-                    if(extras.containsKey("ContactName")){
-                        String number = extras.getString("ContactName");
-                        txtPhoneNo.setText(number);
-                        extras.clear();
-                    }else{
-                        String message = extras.getString("smsMessage");
-                        txtMessage.setText(message);
-                        extras.clear();
-                    }
+                if(extras.containsKey("ContactName")){
+                    String number = extras.getString("ContactName");
+                    txtPhoneNo.setText(number);
+                    extras.clear();
+                }else{
+                    String message = extras.getString("smsMessage");
+                    txtMessage.setText(message);
+                    extras.clear();
+                }
             }
         }catch(Exception e){
 
@@ -171,16 +190,19 @@ public class SMS extends Activity {
         startActivity(intent);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void showHelpBox(View view)
     {
         DialogFragment help = new HelpBox();
-        help.show(getFragmentManager(), "What are those?");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            help.show(getFragmentManager(), "What are those?");
+        }
     }
 
     public void autoReplyOn(View view)
     {
         SmsRecieve.auto_reply_status = true;
-        Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, SmsRecieve.class);
         startActivity(intent);
 
@@ -189,7 +211,7 @@ public class SMS extends Activity {
     public void autoReplyOff(View view)
     {
         SmsRecieve.auto_reply_status = false;
-        Toast.makeText(getApplicationContext(), "auto reply turned off", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "auto reply turned off", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, SmsRecieve.class);
         startActivity(intent);
     }

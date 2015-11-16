@@ -5,24 +5,40 @@
     android:orientation="vertical"
     tools:context=".SmsReceive">
 
+    <include layout="@layout/main_toolbar"
+        android:id="@+id/toolbar_convo"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Conversation Name Holder"
+        android:gravity="center"
+        android:padding="5dp"
         android:id="@+id/conversationName"
         android:layout_gravity="center_horizontal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/darker_gray"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:gravity="center">
 
     <ListView android:id="@+id/conversationMessageList"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:dividerHeight="1dp"
         android:longClickable="true"/>
 
   </LinearLayout>
