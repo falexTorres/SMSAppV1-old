@@ -29,34 +29,36 @@ public class SMS extends Activity {
     protected void onResume() {
         super.onResume();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(SMS.this);
-        builder.setMessage("This SMS app is not set as your default messaging app. Do you want to set it default?")
-                .setCancelable(false)
-                .setTitle("Dude!")
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        if (! Telephony.Sms.getDefaultSmsPackage(this).equals("alextorres.smsapp")){
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SMS.this);
+            builder.setMessage("This SMS app is not set as your default messaging app. Do you want to set it default?")
+                    .setCancelable(false)
+                    .setTitle("Dude!")
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
 
-                    }
-                })
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @TargetApi(19)
-                    public void onClick(DialogInterface dialog, int id) {
+                        }
+                    })
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @TargetApi(19)
+                        public void onClick(DialogInterface dialog, int id) {
 
-                        Intent intent =
-                                new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                            Intent intent =
+                                    new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
 
-                        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
-                                getPackageName());
+                            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
+                                    getPackageName());
 
-                        startActivity(intent);
+                            startActivity(intent);
 
-                    }
-                });
-        builder.show();
-
+                        }
+                    });
+            builder.show();
+        }
     }
 
     public SMS(String number) {
