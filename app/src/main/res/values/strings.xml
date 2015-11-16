@@ -8,4 +8,15 @@
     <string name="title_activity_messager">Messager</string>
     <string name="title_activity_conversation_display">ConversationDisplayActivity</string>
     <string name="title_activity_delete_sms">DeleteSmsActivity</string>
+    <string name="title_activity_mmms_receiver">MmmsReceiver</string>
+    <string name="title_activity_headless_sms_send_service">HeadlessSmsSendService</string>
+    <string name="title_activity_display_draft">DisplayDraftActivity</string>
+    <string name="title_activity_edit_draft">EditDraftActivity</string>
+
+    <color name="color_white">#ffffff</color>
+    <color name="colorPrimary">#188575</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="image_bg">#d0b9b9b9</color>
+    <color name="editText_hint">#656565</color>
+
 </resources>

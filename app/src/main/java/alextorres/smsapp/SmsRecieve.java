@@ -1,15 +1,21 @@
 package alextorres.smsapp;
 
-import android.app.ListActivity;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsMessage;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,9 +25,10 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
-public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickListener {
+public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    Toolbar mToolbar;
 
     String[] thread_id, snippet,conversationCount, phoneNumbers, draftBody, draftAddress, thread;
     ArrayList<String> name;
@@ -31,7 +38,7 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
     ArrayAdapter arrayAdapter;
     SearchView search;
     static Uri uri1;
-    public static boolean auto_reply_status;
+    public static boolean auto_reply_status = false;
 
     public class SmsBroadcastReceiver extends BroadcastReceiver {
 
@@ -46,20 +53,16 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
                 for (int i = 0; i < sms.length; ++i)
                 {
                     SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
-                    final String smsBody = smsMessage.getMessageBody();
+                    String smsBody = smsMessage.getMessageBody().toString();
                     String address = smsMessage.getOriginatingAddress();
 
                     smsMessageStr += "SMS From: " + address + "\n";
                     smsMessageStr += smsBody + "\n";
 
-                    if (auto_reply_status) {
+                    if (auto_reply_status==true){
                         SMS autoreply = new SMS();
-                        autoreply.sendSMS(smsBody);
+                        autoreply.sendSMS(smsMessage.getMessageBody().toString());
                     }
-                }
-
-
-
 
                 }
                 Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show();
@@ -70,6 +73,15 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
             }
 
         }
+    }
+
+    public class MmmsReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("Do something");
+        }
+    }
 
 
     public static SmsRecieve instance() {
@@ -82,10 +94,24 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
         inst = this;
     }
 
+    @SuppressLint("WrongViewCast")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_recieve);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_messages);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Messages");
+
         smsListView = (ListView) findViewById(R.id.SMSList);
         search = (SearchView) findViewById(R.id.searchView);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, smsMessagesList);
@@ -118,7 +144,8 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
                     }
                 }
                 c.close();
-                setListAdapter(arrayAdapter);
+                refreshSmsInbox();
+                refreshDraftsBox();
                 return false;
             }
         });
@@ -129,7 +156,7 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
 
     private ArrayList<String> check(String str) {
 
-        boolean fullContainsSub = str.toUpperCase().contains(str);
+        boolean fullContainsSub = str.toUpperCase().indexOf(str.toUpperCase()) != -1;
 
         if(fullContainsSub)
         {
@@ -138,7 +165,7 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
         return smsMessagesList;
     }
 
-    /*private void refreshDraftsBox() {
+    private void refreshDraftsBox() {
         ContentResolver contentResolver = getContentResolver();
         Cursor draftsCursor = contentResolver.query(Uri.parse("content://sms/draft"), null, null, null, null);
         String tempName = null;
@@ -157,11 +184,11 @@ public class SmsRecieve extends ListActivity implements AdapterView.OnItemClickL
             draftsCursor.moveToNext();
         }
 
-    }*/
+    }
 
     private void refreshSmsInbox() {
         ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/conversations"), null, null, null, null);
         String tempName = null;
         conversationCount = new String[smsInboxCursor.getCount()];
         snippet = new String[smsInboxCursor.getCount()];

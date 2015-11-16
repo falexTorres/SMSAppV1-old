@@ -7,7 +7,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,11 +28,27 @@ public class ConversationDisplayActivity extends AppCompatActivity {
     ListView messageList, nameList;
     ArrayList<String> messages;
 
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String threadID = "99";
         setContentView(R.layout.activity_conversation_display);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_convo);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Converstations");
+
+
+
         Bundle threadDetail = getIntent().getExtras();
         if (threadDetail != null) {
             threadID = threadDetail.getString("THREAD_ID");
@@ -133,25 +151,25 @@ public class ConversationDisplayActivity extends AppCompatActivity {
                     name = getContactName(getApplicationContext(), conversationMessageCursor.getString(conversationMessageCursor.getColumnIndexOrThrow("address")));
                     type = conversationMessageCursor.getString(conversationMessageCursor.getColumnIndexOrThrow("type"));
 
-                if(type.equalsIgnoreCase("2")){
-                    messages.add("Me");
-                }else {
-                    if (person != null) {
-                        altName = getDisplayName(getApplicationContext(), person);
-                        if (altName != null) {
-                            messages.add(altName);
+                    if(type.equalsIgnoreCase("2")){
+                        messages.add("Me");
+                    }else {
+                        if (person != null) {
+                            altName = getDisplayName(getApplicationContext(), person);
+                            if (altName != null) {
+                                messages.add(altName);
+                            } else {
+                                messages.add(name);
+                            }
                         } else {
-                            messages.add(name);
-                        }
-                    } else {
 
-                        if (name == null) {
-                            messages.add(number);
-                        } else {
-                            messages.add(name);
+                            if (name == null) {
+                                messages.add(number);
+                            } else {
+                                messages.add(name);
+                            }
                         }
                     }
-                }
 
                 }catch (Exception E){
                     System.out.println("Something went wrong: " + E);
@@ -159,7 +177,7 @@ public class ConversationDisplayActivity extends AppCompatActivity {
             }
         }
 
-            conversationMessageCursor.close();
+        conversationMessageCursor.close();
         return messages;
     }
 
@@ -203,7 +221,7 @@ public class ConversationDisplayActivity extends AppCompatActivity {
         String displayName = null;
         if(name.moveToFirst()){
             displayName = name.getString(name.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-           // System.out.println("DISPLAYNAME IS: " + displayName);
+            // System.out.println("DISPLAYNAME IS: " + displayName);
         }
         return displayName;
     }
@@ -218,8 +236,8 @@ public class ConversationDisplayActivity extends AppCompatActivity {
     public void combineArrays(ArrayList<String> one, ArrayList<String> two){
         String message, names, combine;
         for(int i = 0; i < one.size(); i++){
-           message = one.get(i).toString();
-           names = two.get(i).toString();
+            message = one.get(i).toString();
+            names = two.get(i).toString();
             combine = names+ ":: " + message;
             one.set(i,combine);
         }
@@ -231,13 +249,13 @@ public class ConversationDisplayActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
