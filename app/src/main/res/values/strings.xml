@@ -8,4 +8,6 @@
     <string name="title_activity_messager">Messager</string>
     <string name="title_activity_conversation_display">ConversationDisplayActivity</string>
     <string name="title_activity_delete_sms">DeleteSmsActivity</string>
+    <string name="title_activity_mmms_receiver">MmmsReceiver</string>
+    <string name="title_activity_headless_sms_send_service">HeadlessSmsSendService</string>
 </resources>

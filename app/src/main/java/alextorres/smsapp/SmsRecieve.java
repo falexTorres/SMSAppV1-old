@@ -8,7 +8,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsMessage;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,6 +68,15 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
         }
     }
+
+    public class MmmsReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("Do something");
+        }
+    }
+
 
     public static SmsRecieve instance() {
         return inst;
