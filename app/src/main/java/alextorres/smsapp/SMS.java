@@ -1,7 +1,6 @@
 package alextorres.smsapp;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -202,7 +201,7 @@ public class SMS extends AppCompatActivity {
         }
         // Date of the draft message.
         values.put("date", String.valueOf(System.currentTimeMillis()));
-        values.put("type", "2");
+        values.put("type", "3");
         // Put the actual thread id here. 0 if there is no thread yet.
         values.put("thread_id", "0");
         getContentResolver().insert(Uri.parse("content://sms/draft"), values);
