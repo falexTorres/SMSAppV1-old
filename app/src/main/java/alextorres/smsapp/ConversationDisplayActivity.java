@@ -17,7 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.StringTokenizer;
@@ -111,6 +112,8 @@ public class ConversationDisplayActivity extends AppCompatActivity {
         ArrayList<String> messages = new ArrayList<String>();
         String query = "thread_id=" + thread_id;
         String messageHolder;
+        //String date;
+       // Date time;
         Cursor conversationMessageCursor = cr.query(Uri.parse("content://sms/"), null, query, null, null);
         String messageID = "";
 
@@ -119,6 +122,8 @@ public class ConversationDisplayActivity extends AppCompatActivity {
                 try{
                     messageID = conversationMessageCursor.getString(conversationMessageCursor.getColumnIndex("_ID"));
                     messageHolder = conversationMessageCursor.getString(conversationMessageCursor.getColumnIndexOrThrow("body")).toString();
+                   // time = new Date(conversationMessageCursor.getColumnIndexOrThrow("date"));
+                    //date = new SimpleDateFormat("HH:mm dd:MM;yyy").format(time);
                     messages.add(messageHolder + ":: " + messageID);
 
                 }catch (Exception E){
