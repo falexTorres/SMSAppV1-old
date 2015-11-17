@@ -38,11 +38,16 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
     ArrayAdapter arrayAdapter;
     SearchView search;
     static Uri uri1;
-    public static boolean auto_reply_status = false;
+    public static boolean auto_reply_status;
 
     public class SmsBroadcastReceiver extends BroadcastReceiver {
 
         public static final String SMS_BUNDLE = "pdus";
+
+        public SmsBroadcastReceiver(){
+            Intent intent1 = new Intent(getApplicationContext(), SMS.class);
+            startActivity(intent1);
+        }
 
         public void onReceive(Context context, Intent intent) {
             Bundle intentExtras = intent.getExtras();
@@ -59,9 +64,9 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
                     smsMessageStr += "SMS From: " + address + "\n";
                     smsMessageStr += smsBody + "\n";
 
-                    if (auto_reply_status==true){
+                    if (auto_reply_status){
                         SMS autoreply = new SMS();
-                        autoreply.sendSMS(smsMessage.getMessageBody().toString());
+                        autoreply.sendSMS(address);
                     }
 
                 }
