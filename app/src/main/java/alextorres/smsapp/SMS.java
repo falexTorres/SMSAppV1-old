@@ -99,11 +99,18 @@ public class SMS extends AppCompatActivity {
 
         for(String n : multiNumbers) {
             try {
-                intent.setType("vnd.android-dir/mms-sms");
-                intent.putExtra("address", n);
-                intent.putExtra("sms_body", msgbody);
-                startActivity(intent);
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
                 Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
+                ContentValues values = new ContentValues();
+                values.put("address", n);
+                values.put("body", txtMessage.getText().toString());
+                // Date of the draft message.
+                values.put("date", String.valueOf(System.currentTimeMillis()));
+                values.put("type", "2");
+                // Put the actual thread id here. 0 if there is no thread yet.
+                values.put("thread_id", "0");
+                getContentResolver().insert(Uri.parse("content://sms/"), values);
             } catch (Exception ex) {
                 Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
                 ex.printStackTrace();
@@ -122,11 +129,18 @@ public class SMS extends AppCompatActivity {
 
         for(String n : multiNumbers) {
             try {
-                intent.setType("vnd.android-dir/mms-sms");
-                intent.putExtra("address", n);
-                intent.putExtra("sms_body", msgbody);
-                startActivity(intent);
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
                 Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
+                ContentValues values = new ContentValues();
+                values.put("address", n);
+                values.put("body", txtMessage.getText().toString());
+                // Date of the draft message.
+                values.put("date", String.valueOf(System.currentTimeMillis()));
+                values.put("type", "2");
+                // Put the actual thread id here. 0 if there is no thread yet.
+                values.put("thread_id", "0");
+                getContentResolver().insert(Uri.parse("content://sms/"), values);
             } catch (Exception ex) {
                 Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
                 ex.printStackTrace();
@@ -178,7 +192,7 @@ public class SMS extends AppCompatActivity {
         }
         // Date of the draft message.
         values.put("date", String.valueOf(System.currentTimeMillis()));
-        values.put("type", "3");
+        values.put("type", "2");
         // Put the actual thread id here. 0 if there is no thread yet.
         values.put("thread_id", "0");
         getContentResolver().insert(Uri.parse("content://sms/draft"), values);
