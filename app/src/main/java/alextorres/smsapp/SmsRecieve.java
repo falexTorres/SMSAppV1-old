@@ -130,26 +130,25 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Cursor c;
-
-                uri1 = Uri.parse("content://sms/inbox");
-                c = getContentResolver().query(uri1, null, null, null, null);
-                startManagingCursor(c);
-
-                String[] body = new String[c.getCount()];
-
-                if (c.moveToFirst()) {
-                    for (int i = 0; i < c.getCount(); i++) {
-                        body[i] = c.getString(c.getColumnIndexOrThrow("body"));
-
-                        smsMessagesList = check(body[i]);
-
-                        c.moveToNext();
-                    }
+                String sQuery;
+                ArrayList<String> smsListSort = new ArrayList<String>();
+                for (int i = 0; i < smsMessagesList.size() ; i++)
+                {
+                  sQuery = smsMessagesList.get(i);
+                  if (newText.length() <= sQuery.length())
+                  {
+                      if (newText.equalsIgnoreCase((String) sQuery.subSequence(0, newText.length())))
+                      {
+                          smsListSort.add(smsMessagesList.get(i));
+                      }
+                  }
                 }
-                c.close();
-                refreshSmsInbox();
-                refreshDraftsBox();
+                smsMessagesList.clear();
+                for (int j = 0; j < smsListSort.size(); j++)
+                {
+                    smsMessagesList.add(smsListSort.get(j));
+                }
+                arrayAdapter.notifyDataSetChanged();
                 return false;
             }
         });
@@ -158,7 +157,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         //refreshDraftsBox();
     }
 
-    private ArrayList<String> check(String str) {
+    /*private ArrayList<String> check(String str) {
 
         boolean fullContainsSub = str.toUpperCase().indexOf(str.toUpperCase()) != -1;
 
@@ -188,7 +187,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
             draftsCursor.moveToNext();
         }
 
-    }
+    }*/
 
     private void refreshSmsInbox() {
         ContentResolver contentResolver = getContentResolver();
@@ -264,10 +263,10 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         return contactName;
     }
 
-    public void updateList(final String smsMessage) {
+    /*public void updateList(final String smsMessage) {
         arrayAdapter.insert(smsMessage, 0);
         arrayAdapter.notifyDataSetChanged();
-    }
+    }*/
 
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
         try {
