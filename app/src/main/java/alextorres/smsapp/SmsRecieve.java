@@ -40,46 +40,44 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
     static Uri uri1;
     public static boolean auto_reply_status;
 
-    public class SmsBroadcastReceiver extends BroadcastReceiver {
-
-        public static final String SMS_BUNDLE = "pdus";
-
-        public SmsBroadcastReceiver(){
-            Intent intent1 = new Intent(getApplicationContext(), SMS.class);
-            startActivity(intent1);
-            onReceive(getApplication(), intent1);
-        }
+  /*  public class SmsBroadcastReceiver extends BroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
             Bundle intentExtras = intent.getExtras();
-            Object[] sms = (Object[]) intentExtras.get(SMS_BUNDLE);
+
             String smsMessageStr = "";
 
-            if (intentExtras != null) {
-                for (int i = 0; i < sms.length; ++i)
-                {
-                    SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
-                    String smsBody = smsMessage.getMessageBody().toString();
-                    String address = smsMessage.getOriginatingAddress();
+            try {
+                if (intentExtras != null) {
+                    Object[] sms = (Object[]) intentExtras.get("pdus");
+                    for (int i = 0; i < sms.length; ++i) {
+                        SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
+                        String smsBody = smsMessage.getMessageBody().toString();
+                        String address = smsMessage.getOriginatingAddress();
 
-                    smsMessageStr += "SMS From: " + address + "\n";
-                    smsMessageStr += smsBody + "\n";
+                        smsMessageStr += "SMS From: " + address + "\n";
+                        smsMessageStr += smsBody + "\n";
 
-                    if (auto_reply_status){
-                        SMS autoreply = new SMS();
-                        autoreply.sendSMS(address);
+                        if (auto_reply_status) {
+                            SMS autoreply = new SMS();
+                            autoreply.sendSMS(address);
+                        }
+
                     }
+                    Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show();
 
+                    //this will update the UI with message
+                   // SmsRecieve inst = SmsRecieve.instance();
+                   // inst.updateList(smsMessageStr);
                 }
-                Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show();
-
-                //this will update the UI with message
-                SmsRecieve inst = SmsRecieve.instance();
-                inst.updateList(smsMessageStr);
+            }catch(Exception e){
+                System.out.println("Exception in smsBroadcastReceiver" +e);
             }
 
         }
+
     }
+*/
 
     public class MmmsReceiver extends BroadcastReceiver {
 
