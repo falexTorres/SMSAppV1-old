@@ -55,7 +55,7 @@ public class ContactListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ContactListActivity.this, SMS.class);
                 String nameAndID = arrayAdapterNames.getItem(position);
-                intent.putExtra("ContactName", getNumber(nameAndID));
+                intent.putExtra(ContactsContract.Intents.Insert.PHONE, getNumber(nameAndID));
                 startActivity(intent);
             }
         });
@@ -75,19 +75,6 @@ public class ContactListActivity extends AppCompatActivity {
         }
     }
 
-    public void refreshDrafts() {
-        ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
-        int indexBody = smsInboxCursor.getColumnIndex("body");
-        int indexAddress = smsInboxCursor.getColumnIndex("address");
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
-        arrayAdapterDrafts.clear();
-        do {
-            String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
-                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
-            arrayAdapterDrafts.add(str);
-        } while (smsInboxCursor.moveToNext());
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
