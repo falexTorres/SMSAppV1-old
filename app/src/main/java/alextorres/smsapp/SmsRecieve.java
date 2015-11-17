@@ -130,7 +130,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                String sQuery;
+                /*String sQuery;
                 ArrayList<String> smsListSort = new ArrayList<String>();
                 for (int i = 0; i < smsMessagesList.size() ; i++)
                 {
@@ -149,6 +149,35 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
                     smsMessagesList.add(smsListSort.get(j));
                 }
                 arrayAdapter.notifyDataSetChanged();
+                return false;
+            }*/
+                ContentResolver cr = getContentResolver();
+                Cursor searchCursor = cr.query(Uri.parse("content://sms/conversations"), null, null, null, null);
+                String tempName = null;
+                conversationCount = new String[searchCursor.getCount()];
+                snippet = new String[searchCursor.getCount()];
+                thread_id = new String[searchCursor.getCount()];
+
+                //get conversation if the any text from the search query is found in the message body
+                searchCursor.moveToFirst();
+                for (int i = 0; i < searchCursor.getCount(); i++) {
+                        conversationCount[i] = searchCursor.getString(searchCursor.getColumnIndexOrThrow("msg_count")).toString();
+
+                        snippet[i] = searchCursor.getString(searchCursor.getColumnIndexOrThrow("snippet")).toString();
+
+                        thread_id[i] = searchCursor.getString(searchCursor.getColumnIndexOrThrow("thread_id")).toString();
+
+                        tempName = getName(getApplicationContext(), thread_id[i]);
+                    if (newText.equalsIgnoreCase(snippet[i])) {
+                        if (tempName != null) {
+                            arrayAdapter.add(tempName + " : " + snippet[i]);
+                        } else {
+                            arrayAdapter.add(thread_id[i] + " : " + snippet[i]);
+                        }
+                        searchCursor.moveToNext();
+                    }
+                }
+                searchCursor.close();
                 return false;
             }
         });
