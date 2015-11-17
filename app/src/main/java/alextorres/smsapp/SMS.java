@@ -94,12 +94,15 @@ public class SMS extends AppCompatActivity {
     {
         String number = txtPhoneNo.getText().toString();
         String multiNumbers[] = number.split(", *");
+        String msgbody = txtMessage.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
 
         for(String n : multiNumbers) {
             try {
-
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
+                intent.setType("vnd.android-dir/mms-sms");
+                intent.putExtra("address", n);
+                intent.putExtra("sms_body", msgbody);
+                startActivity(intent);
                 Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
             } catch (Exception ex) {
                 Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
@@ -113,13 +116,16 @@ public class SMS extends AppCompatActivity {
     public void sendSMS(String number)
     {
         number = txtPhoneNo.getText().toString();
+        String msgbody = txtMessage.getText().toString();
         String multiNumbers[] = number.split(", *");
+        Intent intent = new Intent(Intent.ACTION_VIEW);
 
         for(String n : multiNumbers) {
             try {
-
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
+                intent.setType("vnd.android-dir/mms-sms");
+                intent.putExtra("address", n);
+                intent.putExtra("sms_body", msgbody);
+                startActivity(intent);
                 Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
             } catch (Exception ex) {
                 Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
