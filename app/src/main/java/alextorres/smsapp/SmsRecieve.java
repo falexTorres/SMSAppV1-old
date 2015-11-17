@@ -47,6 +47,7 @@ public class SmsRecieve extends AppCompatActivity implements AdapterView.OnItemC
         public SmsBroadcastReceiver(){
             Intent intent1 = new Intent(getApplicationContext(), SMS.class);
             startActivity(intent1);
+            onReceive(getApplication(), intent1);
         }
 
         public void onReceive(Context context, Intent intent) {
