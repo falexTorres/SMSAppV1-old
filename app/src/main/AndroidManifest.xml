@@ -74,7 +74,7 @@
             android:name=".SmsRecieve"
             android:label="@string/title_activity_sms_recieve"
             android:parentActivityName=".Messager"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"> >
         </activity>
         <activity
             android:name=".ContactListActivity"
@@ -114,6 +114,11 @@
         <activity
             android:name=".SmsBroadcastReceiver"
             android:label="@string/title_activity_incoming_sms"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name=".SaveContactActivity"
+            android:label="@string/title_activity_save_contact"
             android:theme="@style/AppTheme" >
         </activity>
     </application>

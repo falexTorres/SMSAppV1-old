@@ -19,5 +19,6 @@
     <color name="image_bg">#d0b9b9b9</color>
     <color name="editText_hint">#656565</color>
     <string name="title_activity_incoming_sms">IncomingSms</string>
+    <string name="title_activity_save_contact">SaveContactActivity</string>
 
 </resources>

@@ -106,7 +106,7 @@ public class SMS extends AppCompatActivity {
                 values.put("address", n);
                 values.put("body", txtMessage.getText().toString());
                 // Date of the draft message.
-                values.put("date", String.valueOf(System.currentTimeMillis()));
+                values.put("date_sent", String.valueOf(System.currentTimeMillis()));
                 values.put("type", "2");
                 // Put the actual thread id here. 0 if there is no thread yet.
                 values.put("thread_id", "0");
@@ -136,7 +136,7 @@ public class SMS extends AppCompatActivity {
                 values.put("address", n);
                 values.put("body", txtMessage.getText().toString());
                 // Date of the draft message.
-                values.put("date", String.valueOf(System.currentTimeMillis()));
+                values.put("date_sent", String.valueOf(System.currentTimeMillis()));
                 values.put("type", "2");
                 // Put the actual thread id here. 0 if there is no thread yet.
                 values.put("thread_id", "0");
@@ -148,6 +148,16 @@ public class SMS extends AppCompatActivity {
         }
 
 
+    }
+
+    public void saveContact(View view){
+        if(txtPhoneNo.getText().toString().trim().length() > 0) {
+            Intent intent = new Intent(this, SaveContactActivity.class);
+            intent.putExtra("CONTACT_NUMBER", txtPhoneNo.getText().toString());
+            startActivity(intent);
+        }else{
+            Toast.makeText(getApplicationContext(), "You must enter a contact number to add a new contact", Toast.LENGTH_LONG).show();
+        }
     }
 
 
