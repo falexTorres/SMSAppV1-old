@@ -1,7 +1,6 @@
 package alextorres.smsapp;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -27,6 +26,8 @@ public class SMS extends AppCompatActivity {
     public EditText txtMessage;
     public View auto_reply_off = null;
     Toolbar mToolbar;
+    public static boolean auto_reply_status;
+    public static String auto_reply_message;
 
     public SMS(String number) {
         if((number.length()==10) || (number.length()==11)) {
@@ -202,7 +203,7 @@ public class SMS extends AppCompatActivity {
         }
         // Date of the draft message.
         values.put("date", String.valueOf(System.currentTimeMillis()));
-        values.put("type", "2");
+        values.put("type", "3");
         // Put the actual thread id here. 0 if there is no thread yet.
         values.put("thread_id", "0");
         getContentResolver().insert(Uri.parse("content://sms/draft"), values);
@@ -231,19 +232,22 @@ public class SMS extends AppCompatActivity {
 
     public void autoReplyOn(View view)
     {
-        SmsRecieve.auto_reply_status = true;
-        Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, SmsRecieve.class);
-        startActivity(intent);
+        if(txtMessage.getText().toString().length() > 0) {
+            auto_reply_status = true;
+            auto_reply_message = txtMessage.getText().toString();
+            Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "You must enter a message to set auto-reply", Toast.LENGTH_LONG).show();
+
+        }
 
     }
 
     public void autoReplyOff(View view)
     {
-        SmsRecieve.auto_reply_status = false;
+        auto_reply_status = false;
+        auto_reply_message = "";
         Toast.makeText(getApplicationContext(), "auto reply turned off", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, SmsRecieve.class);
-        startActivity(intent);
     }
 
 }

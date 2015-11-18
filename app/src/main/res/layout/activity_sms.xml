@@ -285,7 +285,8 @@
                         android:text="Set Auto Reply"
                         android:textSize="16sp"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:onClick="autoReplyOn"/>
 
                 </LinearLayout>
 

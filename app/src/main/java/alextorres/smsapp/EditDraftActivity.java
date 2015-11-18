@@ -1,12 +1,10 @@
 package alextorres.smsapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
@@ -70,10 +68,20 @@ public class EditDraftActivity extends AppCompatActivity {
         String multiNumbers[] = number.split(", *");
         for(String n : multiNumbers) {
             try {
-
+                String query = "_id="+mID;
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(n, null, mess.getText().toString(), null, null);
                 Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
+                ContentValues values = new ContentValues();
+                values.put("address", n);
+                values.put("body", mess.getText().toString());
+                // Date of the draft message.
+                values.put("date_sent", String.valueOf(System.currentTimeMillis()));
+                values.put("type", "2");
+                // Put the actual thread id here. 0 if there is no thread yet.
+                values.put("thread_id", "0");
+                getContentResolver().insert(Uri.parse("content://sms/"), values);
+                getContentResolver().delete(Uri.parse("content://sms/"),query,null);
             } catch (Exception ex) {
                 Toast.makeText(getApplicationContext(), "message failed", Toast.LENGTH_LONG).show();
                 ex.printStackTrace();
