@@ -38,10 +38,10 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
                         if(SMS.auto_reply_status == true){
                             try {
                                 SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(address, null, smsBody, null, null);
+                                smsManager.sendTextMessage(address, null, SMS.auto_reply_message, null, null);
                                 ContentValues sentValue = new ContentValues();
                                 values.put("address", address);
-                                values.put("body", smsBody);
+                                values.put("body", SMS.auto_reply_message);
                                 // Date of the draft message.
                                 values.put("date_sent", String.valueOf(System.currentTimeMillis()));
                                 values.put("type", "2");
