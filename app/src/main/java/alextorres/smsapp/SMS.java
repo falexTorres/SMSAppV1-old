@@ -26,6 +26,8 @@ public class SMS extends AppCompatActivity {
     public EditText txtMessage;
     public View auto_reply_off = null;
     Toolbar mToolbar;
+    public static boolean auto_reply_status;
+    public static String auto_reply_message;
 
     public SMS(String number) {
         if((number.length()==10) || (number.length()==11)) {
@@ -230,19 +232,22 @@ public class SMS extends AppCompatActivity {
 
     public void autoReplyOn(View view)
     {
-        SmsRecieve.auto_reply_status = true;
-        Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, SmsRecieve.class);
-        startActivity(intent);
+        if(txtMessage.getText().toString().length() > 0) {
+            auto_reply_status = true;
+            auto_reply_message = txtMessage.getText().toString();
+            Toast.makeText(getApplicationContext(), "auto reply turned on", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "You must enter a message to set auto-reply", Toast.LENGTH_LONG).show();
+
+        }
 
     }
 
     public void autoReplyOff(View view)
     {
-        SmsRecieve.auto_reply_status = false;
+        auto_reply_status = false;
+        auto_reply_message = "";
         Toast.makeText(getApplicationContext(), "auto reply turned off", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, SmsRecieve.class);
-        startActivity(intent);
     }
 
 }
