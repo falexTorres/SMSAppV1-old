@@ -17,6 +17,7 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             Bundle intentExtras = intent.getExtras();
 
             String smsMessageStr = "";
+            boolean sentBack = false;
 
             try {
                 if (intentExtras != null) {
@@ -37,17 +38,11 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 
                         if(SMS.auto_reply_status == true){
                             try {
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(address, null, SMS.auto_reply_message, null, null);
-                                ContentValues sentValue = new ContentValues();
-                                values.put("address", address);
-                                values.put("body", SMS.auto_reply_message);
-                                // Date of the draft message.
-                                values.put("date_sent", String.valueOf(System.currentTimeMillis()));
-                                values.put("type", "2");
-                                // Put the actual thread id here. 0 if there is no thread yet.
-                                values.put("thread_id", "0");
-                                cr.insert(Uri.parse("content://sms/"), sentValue);
+                                if(sentBack == false) {
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(address, null, SMS.auto_reply_message, null, null);
+                                    sentBack = true;
+                                }
                             } catch (Exception ex) {
                                 System.out.println("Error sending autoreply message: " + ex);
                             }

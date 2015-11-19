@@ -119,7 +119,6 @@
                 android:background="@color/color_white"
                 android:gravity="center_vertical"
                 android:hint="Enter Message"
-                android:inputType="textCapWords"
                 android:minLines="4"
                 android:paddingLeft="20dp"
                 android:singleLine="false"
