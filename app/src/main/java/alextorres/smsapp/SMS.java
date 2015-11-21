@@ -131,7 +131,7 @@ public class SMS extends AppCompatActivity {
         for(String n : multiNumbers) {
             try {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(n, null, txtMessage.getText().toString(), null, null);
+                smsManager.sendTextMessage(n, null, "hello friend", null, null);
                 Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
                 ContentValues values = new ContentValues();
                 values.put("address", n);
